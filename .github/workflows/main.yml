@@ -1,4 +1,4 @@
-name: ci
+name: Build with Self-Hosted
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, label-1]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Print build number
-        run: echo "This is build number ${{ github.run_number }}"
+      - name: Test step
+        run: echo "Running on my self-hosted runner 🚀"
 
-      - name: List repo
-        run: ls -ls
+      - name: List passwd file
+        run: cat /etc/passwd
