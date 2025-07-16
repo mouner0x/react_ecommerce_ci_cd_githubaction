@@ -15,3 +15,6 @@ jobs:
 
       - name: Print build number
         run: echo "This is build number ${{ github.run_number }}"
+
+      - name: List repo
+        run: ls -ls
