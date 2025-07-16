@@ -1,4 +1,4 @@
-name: Build with Self-Hosted
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,15 +6,25 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: [self-hosted, label-1]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Test step
-        run: echo "Running on my self-hosted runner 🚀"
+      - name: Build Docker image
+        run: docker build -t mouner0x/webapp:v${{ github.run_number }} .
 
-      - name: List passwd file
-        run: cat /etc/passwd
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker image
+        run: docker push mouner0x/webapp:v${{ github.run_number }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f Deployment.yml
+          kubectl apply -f svc.yml
+          kubectl set image deployment/deploy-app webapp=mouner0x/webapp:v${{ github.run_number }}
+          kubectl rollout status deployment/deploy-app
