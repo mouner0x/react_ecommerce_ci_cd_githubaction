@@ -6,9 +6,12 @@ on:
       - main
 
 jobs:
-  first_job:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print message
-        run: echo "Welcome to the 1st GitHub Action workflow"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print build number
+        run: echo "This is build number ${{ github.run_number }}"
